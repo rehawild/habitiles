@@ -1,0 +1,298 @@
+/* Habits Grid Styles */
+.habits-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.habits-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 119, 48, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.habits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  max-width: 800px;
+  width: 100%;
+  grid-auto-rows: minmax(120px, auto);
+}
+
+/* Responsive Grid Adjustments */
+@media (min-width: 640px) {
+  .habits-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .habits-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 900px;
+  }
+}
+
+/* Base Habit Tile Styles */
+.habit-tile {
+  position: relative;
+  border: none;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  
+  /* Premium glass effect */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* Sophisticated shadow system */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.habit-tile:focus {
+  outline: 2px solid rgba(99, 102, 241, 0.4);
+  outline-offset: 2px;
+}
+
+.habit-tile:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(60px) saturate(250%);
+  -webkit-backdrop-filter: blur(60px) saturate(250%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.1),
+    0 10px 20px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+
+/* Tile Size Variants */
+.habit-tile-small {
+  grid-row: span 1;
+  min-height: 120px;
+}
+
+.habit-tile-medium {
+  grid-row: span 1;
+  min-height: 140px;
+}
+
+.habit-tile-large {
+  grid-row: span 2;
+  min-height: 180px;
+}
+
+@media (min-width: 640px) {
+  .habit-tile-small {
+    grid-column: span 1;
+    min-height: 140px;
+  }
+  
+  .habit-tile-medium {
+    grid-column: span 1;
+    min-height: 160px;
+  }
+  
+  .habit-tile-large {
+    grid-column: span 2;
+    min-height: 160px;
+  }
+}
+
+/* Tile Content */
+.habit-tile-content {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.habit-icon {
+  margin-bottom: 0.75rem;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  color: rgba(30, 41, 59, 0.9);
+}
+
+.habit-tile:hover .habit-icon {
+  transform: scale(1.08);
+  color: rgba(30, 41, 59, 1);
+}
+
+.habit-text {
+  color: rgba(30, 41, 59, 0.9);
+}
+
+.habit-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  color: rgba(30, 41, 59, 0.95);
+}
+
+.habit-tile:hover .habit-name {
+  transform: scale(1.02);
+  color: rgba(30, 41, 59, 1);
+}
+
+.habit-duration {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin: 0;
+  font-weight: 500;
+  color: rgba(30, 41, 59, 0.65);
+  transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.habit-tile:hover .habit-duration {
+  opacity: 0.85;
+}
+
+/* Completed Habit Styles */
+.habit-tile-completed {
+  opacity: 0.6;
+  filter: grayscale(60%) brightness(0.95);
+  cursor: default;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.habit-tile-completed:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.habit-tile-completed .habit-icon,
+.habit-tile-completed .habit-name,
+.habit-tile-completed .habit-duration {
+  opacity: 0.7;
+}
+
+.habit-tile-completed:hover .habit-icon,
+.habit-tile-completed:hover .habit-name {
+  transform: none;
+}
+
+/* Color Variants */
+.habit-blue {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+.habit-blue:hover {
+  background: rgba(59, 130, 246, 0.35);
+}
+
+.habit-orange {
+  background: rgba(249, 115, 22, 0.25);
+}
+
+.habit-orange:hover {
+  background: rgba(249, 115, 22, 0.35);
+}
+
+.habit-purple {
+  background: rgba(147, 51, 234, 0.25);
+}
+
+.habit-purple:hover {
+  background: rgba(147, 51, 234, 0.35);
+}
+
+.habit-green {
+  background: rgba(34, 197, 94, 0.25);
+}
+
+.habit-green:hover {
+  background: rgba(34, 197, 94, 0.35);
+}
+
+.habit-rose {
+  background: rgba(244, 63, 94, 0.25);
+}
+
+.habit-rose:hover {
+  background: rgba(244, 63, 94, 0.35);
+}
+
+.habit-teal {
+  background: rgba(20, 184, 166, 0.25);
+}
+
+.habit-teal:hover {
+  background: rgba(20, 184, 166, 0.35);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .habit-tile,
+  .habit-tile-content,
+  .habit-icon,
+  .habit-name {
+    transition: none;
+  }
+  
+  .habit-tile:hover {
+    transform: none;
+  }
+  
+  .habit-tile:hover .habit-tile-content {
+    transform: none;
+  }
+  
+  .habit-tile:hover .habit-icon {
+    transform: none;
+  }
+  
+  /* Keep basic color change for reduced motion users */
+  .habit-tile:hover {
+    filter: brightness(1.1);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .habits-container {
+    background: white;
+    padding: 1rem;
+  }
+  
+  .habit-tile {
+    box-shadow: none;
+    border: 2px solid #e5e7eb;
+  }
+}
