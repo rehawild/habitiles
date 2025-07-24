@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon } from 'lucide-react';
+import { XIcon as Icon } from 'lucide-react';
 import { HabitTile } from './HabitTile';
 import { habitData } from '../data/habits';
 
