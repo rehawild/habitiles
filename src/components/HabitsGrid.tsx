@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  rectSortingStrategy
+} from '@dnd-kit/sortable';
 import { HabitTile } from './HabitTile';
 import { habitData } from '../data/habits';
 
@@ -18,6 +34,17 @@ export const HabitsGrid: React.FC = () => {
     habitData.map(habit => ({ ...habit, isCompleted: false }))
   );
 
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor)
+  );
+
   const handleToggleComplete = (habitId: string) => {
     setHabits(prevHabits =>
       prevHabits.map(habit =>
@@ -28,18 +55,61 @@ export const HabitsGrid: React.FC = () => {
     );
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    setActiveId(null);
+
+    if (over && active.id !== over.id) {
+      setHabits((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const activeHabit = activeId ? habits.find(h => h.id === activeId) : null;
+
   return (
     <div className="habits-container">
-      <div className="habits-grid">
-        {habits.map((habit) => (
-          <HabitTile
-            key={habit.id}
-            habit={habit}
-            isCompleted={habit.isCompleted}
-            onToggleComplete={handleToggleComplete}
-          />
-        ))}
-      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="habits-grid">
+          <SortableContext
+            items={habits.map(h => h.id)}
+            strategy={rectSortingStrategy}
+          >
+            {habits.map((habit) => (
+              <HabitTile
+                key={habit.id}
+                habit={habit}
+                isCompleted={habit.isCompleted}
+                onToggleComplete={handleToggleComplete}
+              />
+            ))}
+          </SortableContext>
+        </div>
+        <DragOverlay>
+          {activeHabit ? (
+            <HabitTile
+              habit={activeHabit}
+              isCompleted={activeHabit.isCompleted}
+              onToggleComplete={handleToggleComplete}
+              isOverlay
+            />
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 };
