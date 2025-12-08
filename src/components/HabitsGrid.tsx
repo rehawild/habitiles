@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XIcon as Icon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { HabitTile } from './HabitTile';
 import { habitData } from '../data/habits';
 
@@ -9,7 +9,7 @@ interface HabitWithCompletion {
   duration: string;
   size: 'small' | 'medium' | 'large';
   color: string;
-  icon: Icon;
+  icon: LucideIcon;
   isCompleted: boolean;
 }
 
