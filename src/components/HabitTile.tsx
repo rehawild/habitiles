@@ -1,5 +1,7 @@
 import React from 'react';
 import type { LucideIcon } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface HabitTileProps {
   habit: {
@@ -17,6 +19,19 @@ interface HabitTileProps {
 export const HabitTile: React.FC<HabitTileProps> = ({ habit, isCompleted, onToggleComplete }) => {
   const { name, duration, size, color, icon: Icon } = habit;
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: habit.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   const sizeClasses = {
     small: 'habit-tile-small',
     medium: 'habit-tile-medium', 
@@ -25,7 +40,11 @@ export const HabitTile: React.FC<HabitTileProps> = ({ habit, isCompleted, onTogg
 
   return (
     <button
-      className={`habit-tile ${sizeClasses[size]} ${color} ${isCompleted ? 'habit-tile-completed' : ''}`}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`habit-tile touch-none ${sizeClasses[size]} ${color} ${isCompleted ? 'habit-tile-completed' : ''}`}
       onClick={() => onToggleComplete(habit.id)}
       disabled={isCompleted}
       aria-label={`Habit tile: ${name}`}
