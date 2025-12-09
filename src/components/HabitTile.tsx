@@ -1,30 +1,53 @@
 import React from 'react';
 import type { LucideIcon } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
-interface HabitTileProps {
-  habit: {
-    id: string;
-    name: string;
-    duration: string;
-    size: 'small' | 'medium' | 'large';
-    color: string;
-    icon: LucideIcon;
-  };
-  isCompleted: boolean;
-  onToggleComplete: (habitId: string) => void;
+export interface Habit {
+  id: string;
+  name: string;
+  duration: string;
+  size: 'small' | 'medium' | 'large';
+  color: string;
+  icon: LucideIcon;
 }
 
-export const HabitTile: React.FC<HabitTileProps> = ({ habit, isCompleted, onToggleComplete }) => {
+interface HabitTileProps {
+  habit: Habit;
+  isCompleted: boolean;
+  onToggleComplete: (habitId: string) => void;
+  isOverlay?: boolean;
+}
+
+// Pure UI Component
+const HabitTileBase: React.FC<HabitTileProps & { style?: React.CSSProperties, setNodeRef?: React.Ref<any>, attributes?: any, listeners?: any }> = ({
+  habit,
+  isCompleted,
+  onToggleComplete,
+  style,
+  setNodeRef,
+  attributes,
+  listeners,
+  isOverlay
+}) => {
   const { name, duration, size, color, icon: Icon } = habit;
 
   const sizeClasses = {
     small: 'habit-tile-small',
-    medium: 'habit-tile-medium', 
+    medium: 'habit-tile-medium',
     large: 'habit-tile-large'
   };
 
   return (
     <button
+      ref={setNodeRef}
+      style={{
+        ...style,
+        touchAction: 'none', // Critical for mobile
+        cursor: isOverlay ? 'grabbing' : 'grab',
+      }}
+      {...attributes}
+      {...listeners}
       className={`habit-tile ${sizeClasses[size]} ${color} ${isCompleted ? 'habit-tile-completed' : ''}`}
       onClick={() => onToggleComplete(habit.id)}
       disabled={isCompleted}
@@ -41,5 +64,38 @@ export const HabitTile: React.FC<HabitTileProps> = ({ habit, isCompleted, onTogg
         </div>
       </div>
     </button>
+  );
+};
+
+export const HabitTile: React.FC<HabitTileProps> = (props) => {
+  const { habit, isOverlay } = props;
+
+  if (isOverlay) {
+    return <HabitTileBase {...props} />;
+  }
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: habit.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1, // Placeholder effect
+  };
+
+  return (
+    <HabitTileBase
+      {...props}
+      setNodeRef={setNodeRef}
+      style={style}
+      attributes={attributes}
+      listeners={listeners}
+    />
   );
 };
